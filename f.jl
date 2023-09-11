@@ -1,7 +1,7 @@
 #https://github.com/Vibof/HorizonSideRobot.jl
 using HorizonSideRobots
 
-function countSteps!(robot::Robot,side)
+function countSteps!(robot::Robot,side)::Int64
     counter = 0
     while !isborder(robot,side)
         move!(robot,side)
@@ -17,7 +17,7 @@ function moveBySteps!(robot::Robot,side,steps::Int64)::Nothing
     end
 end
 
-function goTillTheEnd!(robot::Robot,side)
+function goTillTheEnd!(robot::Robot,side)::Nothing
     while !isborder(robot,side)
         move!(robot,side)
     end
@@ -26,13 +26,14 @@ end
 # Nord West Ost Sud
 # Закрашивание карты "улиткой" из левого нижнего угла (строго)
 # xStepsMade и yStepsMade - количество шагов, сделанное в предыдущий раз, изначально равно ширине и высоте поля соответственно
-function paintMap!(robot::Robot,xStepsMade,yStepsMade,alreadyPainted=0::Int64,totalPaintedCells=Nothing,prevSide=Nothing)
-    sideToGo = prevSide == Nothing ? Nord : prevSide == Nord ? Ost : prevSide == Ost ? Sud : prevSide == Sud : West
+function paintMap!(robot::Robot,xStepsMade::Int64,yStepsMade::Int64,alreadyPainted=0::Int64,totalPaintedCells=Nothing,prevSide=Nothing)
+    sideToGo = (prevSide == Nothing) ? Nord : (prevSide == Nord) ? Ost : (prevSide == Ost) ? Sud : prevSide == Sud ? West : Nord
     key:: Bool = prevSide in [West, Ost, Nothing]
-    stepsToDo = key ? yStepsMade : xStepsMade
+    stepsToDo::Int64 = key ? yStepsMade : xStepsMade
     if totalPaintedCells == Nothing
-        totalPaintedCells = yStepsMade*xStepsMade
+        totalPaintedCells::Int64 = yStepsMade*xStepsMade
     end
+    # println(typeof(stepsToDo)," ",typeof(alreadyPainted))
     if totalPaintedCells-alreadyPainted > 1
         for i in range(1,stepsToDo-1)
             putmarker!(robot)
@@ -50,7 +51,7 @@ function paintMap!(robot::Robot,xStepsMade,yStepsMade,alreadyPainted=0::Int64,to
 end
 
 function main()
-    r = Robot(10,10,animate=true)
+    r = Robot(72,100,animate=true)
     stepsToTop = countSteps!(r,Nord)
     stepsToRight = countSteps!(r,Ost)
     width = countSteps!(r,West)+1
