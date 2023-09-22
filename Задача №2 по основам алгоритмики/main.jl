@@ -82,11 +82,12 @@ function moveToLeftBotCorner!(r::Robot)
 end
 
 function main()
-    robot = Robot("Задача №2 по основам алгоритмики\\map.sit";animate=true)
+    robot = Robot("Задача №2 по основам алгоритмики\\map.sit")
     height, width = moveToLeftBotCorner!(robot)
     fillOuterPerimeter!(robot)
     moveBySteps!(robot,Nord,height)
     moveBySteps!(robot,Ost,width)
+    show!(robot)
     sleep(100)
 end
 
