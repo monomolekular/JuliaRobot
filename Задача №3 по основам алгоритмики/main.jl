@@ -51,7 +51,7 @@ function paintMap!(robot::Robot,xStepsMade::Int64,yStepsMade::Int64,alreadyPaint
 end
 
 function main()
-    r = Robot(20,20,animate=true)
+    r = Robot(20,20,animate=false)
     stepsToTop = countSteps!(r,Nord)
     stepsToRight = countSteps!(r,Ost)
     width = countSteps!(r,West)+1
@@ -59,7 +59,7 @@ function main()
     stepsToBackX = width-1-stepsToRight
     stepsToBackY = heigh-1-stepsToTop
     paintMap!(r,width,heigh)
-    #show!(r)
+    show!(r)
     sleep(100)
 end
 
