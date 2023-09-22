@@ -1,6 +1,22 @@
 #https://github.com/Vibof/HorizonSideRobot.jl
 using HorizonSideRobots
 
+function countSteps!(robot::Robot,side)::Int64
+    counter = 0
+    while !isborder(robot,side)
+        move!(robot,side)
+        counter+=1
+    end
+
+    return counter
+end
+
+function moveBySteps!(robot::Robot,side,steps::Int64)::Nothing
+    for i in range(1,steps)
+        move!(robot,side)
+    end
+end
+
 function moveToSideWithWallUp!(r::Robot,side)
     counter::Int64 = 1
     while !isborder(r,side) && isborder(r,Nord)
@@ -56,15 +72,21 @@ function fillOuterPerimeter!(r::Robot)
 end
 
 function moveToLeftBotCorner!(r::Robot)
-    moveToDeadEnd!(r,West)
-    moveToDeadEnd!(r,Sud)
-    moveToDeadEnd!(r,West)
+    h1 = countSteps!(r,Sud)
+    w1 = countSteps!(r,West)
+    h2 = countSteps!(r,Sud)
+    w2 = countSteps!(r,West)
+    height = h1+h2
+    width = h1+h2
+    return height,width
 end
 
 function main()
-    robot = Robot(10,10;animate=true)
-    moveToLeftBotCorner!(robot)
+    robot = Robot("Задача №2 по основам алгоритмики\\map.sit";animate=true)
+    height, width = moveToLeftBotCorner!(robot)
     fillOuterPerimeter!(robot)
+    moveBySteps!(robot,Nord,height)
+    moveBySteps!(robot,Ost,width)
     sleep(100)
 end
 
