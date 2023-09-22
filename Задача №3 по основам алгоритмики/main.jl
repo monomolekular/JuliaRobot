@@ -1,4 +1,3 @@
-#https://github.com/Vibof/HorizonSideRobot.jl
 using HorizonSideRobots
 
 function countSteps!(robot::Robot,side)::Int64
@@ -23,9 +22,6 @@ function goTillTheEnd!(robot::Robot,side)::Nothing
     end
 end
 
-# Nord West Ost Sud
-# Закрашивание карты "улиткой" из левого нижнего угла (строго)
-# xStepsMade и yStepsMade - количество шагов, сделанное в предыдущий раз, изначально равно ширине и высоте поля соответственно
 function paintMap!(robot::Robot,xStepsMade::Int64,yStepsMade::Int64,alreadyPainted=0::Int64,totalPaintedCells=Nothing,prevSide=Nothing)
     sideToGo = (prevSide == Nothing) ? Nord : (prevSide == Nord) ? Ost : (prevSide == Ost) ? Sud : prevSide == Sud ? West : Nord
     key:: Bool = prevSide in [West, Ost, Nothing]
@@ -33,14 +29,12 @@ function paintMap!(robot::Robot,xStepsMade::Int64,yStepsMade::Int64,alreadyPaint
     if totalPaintedCells == Nothing
         totalPaintedCells::Int64 = yStepsMade*xStepsMade
     end
-    # println(typeof(stepsToDo)," ",typeof(alreadyPainted))
     if totalPaintedCells-alreadyPainted > 1
         for i in range(1,stepsToDo-1)
             putmarker!(robot)
             alreadyPainted+=1
             move!(robot,sideToGo)
         end
-        # println(xStepsMade, " ", yStepsMade, " ",alreadyPainted, " ", totalPaintedCells, " ",)
         return (alreadyPainted - stepsToDo + 1) == 0 ? paintMap!(robot,xStepsMade,yStepsMade,alreadyPainted,totalPaintedCells,sideToGo) : key ? paintMap!(robot,xStepsMade,stepsToDo-1,alreadyPainted,totalPaintedCells,sideToGo) : paintMap!(robot,stepsToDo-1,yStepsMade,alreadyPainted,totalPaintedCells,sideToGo)
     else
         putmarker!(robot)
@@ -51,7 +45,7 @@ function paintMap!(robot::Robot,xStepsMade::Int64,yStepsMade::Int64,alreadyPaint
 end
 
 function main()
-    r = Robot(20,20,animate=false)
+    r = Robot(20,20)
     stepsToTop = countSteps!(r,Nord)
     stepsToRight = countSteps!(r,Ost)
     width = countSteps!(r,West)+1
@@ -59,6 +53,8 @@ function main()
     stepsToBackX = width-1-stepsToRight
     stepsToBackY = heigh-1-stepsToTop
     paintMap!(r,width,heigh)
+    moveBySteps!(r,Nord,stepsToBackY)
+    moveBySteps!(r,Ost,stepsToBackX)
     show!(r)
     sleep(100)
 end
