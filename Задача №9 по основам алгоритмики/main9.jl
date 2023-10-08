@@ -24,6 +24,9 @@ function chess!(r::Robot,side = Ost, i = 0)
         end
         i+=1
         if isborder(r,side)
+            if isborder(r,Nord)
+                return true
+            end
             side = inverse(side)
             if !isborder(r,Nord)
                 move!(r,Nord)
@@ -40,6 +43,7 @@ function main()
     x = countSteps!(r,West)
     y = countSteps!(r,Sud)
     chess!(r,Ost,(x+y)%2)
+    sleep(100)
 end
 
 main()
